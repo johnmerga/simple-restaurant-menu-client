@@ -4,6 +4,7 @@
   "description": "",
   "scripts": {
     "start": "parcel index.html",
+    "dev": "rm -rf .parcel-cache dist && npm run start",
     "build": "parcel build index.html"
   },
   "dependencies": {

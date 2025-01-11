@@ -89,15 +89,17 @@ export const api = {
   async createMenuItem(token: string, menuItem: any): Promise<any> {
     console.log("Creating menu item:", menuItem);
 
+    for (const [key, value] of menuItem.entries()) {
+      console.log(key, value);
+    }
     const response = await fetch(`${BASE_URL}/menu`, {
       method: "POST",
       headers: {
         Authorization: `Bearer ${token}`,
-        "Content-Type": "application/json",
+        // "Content-Type": "application/json",
       },
-      body: JSON.stringify(menuItem),
+      body: menuItem,
     });
-
     if (!response.ok) {
       console.error(
         "Create menu item failed:",
@@ -116,14 +118,13 @@ export const api = {
 
   async updateMenuItem(token: string, id: string, menuItem: any): Promise<any> {
     console.log("Updating menu item:", id, menuItem);
-
     const response = await fetch(`${BASE_URL}/menu/${id}`, {
       method: "PATCH",
       headers: {
         Authorization: `Bearer ${token}`,
-        "Content-Type": "application/json",
+        // "Content-Type": "application/json",
       },
-      body: JSON.stringify(menuItem),
+      body: menuItem,
     });
 
     if (!response.ok) {

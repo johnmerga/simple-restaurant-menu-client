@@ -34,26 +34,6 @@ class App {
     UI.showAuthContainer();
   }
 
-  // private setupEventListeners(): void {
-  //   document.addEventListener("submit", async (e) => {
-  //     e.preventDefault();
-  //     const target = e.target as HTMLFormElement;
-  //
-  //     if (target.id === "login-form") {
-  //       await this.handleLogin(target);
-  //     } else if (target.id === "signup-form") {
-  //       await this.handleSignup(target);
-  //     }
-  //   });
-  //
-  //   document.addEventListener("click", (e) => {
-  //     const target = e.target as HTMLElement;
-  //     if (target.id === "logout-btn") {
-  //       this.handleLogout();
-  //     }
-  //   });
-  // }
-
   private async handleLogin(form: HTMLFormElement): Promise<void> {
     const email = (form.querySelector("#login-email") as HTMLInputElement)
       .value;
@@ -134,23 +114,31 @@ class App {
     );
     const category = (form.querySelector("#menu-category") as HTMLInputElement)
       .value;
+    const photo = (form.querySelector("#menu-photo") as HTMLInputElement)
+      .files?.[0];
 
     const token = Auth.getToken()!;
+
+    // Create FormData object
+    const formData = new FormData();
+    formData.append("name", name);
+    formData.append("description", description);
+    formData.append("price", price.toString());
+    formData.append("category", category);
+    if (photo) {
+      formData.append("photo", photo);
+    }
+
     try {
-      const menuItem = await api.createMenuItem(token, {
-        name,
-        description,
-        price,
-        category,
-      });
+      const menuItem = await api.createMenuItem(token, formData);
       console.log("Menu item created:", menuItem);
+
+      // Re-render the menu to ensure the .menu-list element exists
+      const menuItems = await api.getMenu(token);
+      UI.renderMenu(menuItems);
 
       // Add the new menu item to the UI
       UI.addMenuItemToUI(menuItem);
-
-      // Optionally, re-render the menu to ensure consistency
-      const menuItems = await api.getMenu(token);
-      UI.renderMenu(menuItems);
     } catch (error) {
       console.error("Failed to create menu item:", error);
       alert("Failed to create menu item. Please try again.");
@@ -168,15 +156,23 @@ class App {
     );
     const category = (form.querySelector("#menu-category") as HTMLInputElement)
       .value;
+    const photo = (form.querySelector("#menu-photo") as HTMLInputElement)
+      .files?.[0];
 
     const token = Auth.getToken()!;
+
+    // Create FormData object
+    const formData = new FormData();
+    formData.append("name", name);
+    formData.append("description", description);
+    formData.append("price", price.toString());
+    formData.append("category", category);
+    if (photo) {
+      formData.append("photo", photo);
+    }
+
     try {
-      const menuItem = await api.updateMenuItem(token, id, {
-        name,
-        description,
-        price,
-        category,
-      });
+      const menuItem = await api.updateMenuItem(token, id, formData);
       console.log("Menu item updated:", menuItem);
 
       // Update the menu item in the UI
